@@ -25,6 +25,25 @@ export class YoutubeDataAPI {
         }
     }
 
+    public static async getChannelByChannelID(channelId: string): Promise<string[]> {
+        const options: AxiosRequestConfig = {
+            url: `${this.youtubeAPIPrefix}/channels`,
+            method: "GET",
+            params: {
+                part: 'snippet',
+                key: appConfig.youtubeAPIKey,
+                id: channelId
+            },
+        };
+        try {
+            const res: AxiosResponse<any[]> = await axios(options) // GET
+            return res.data
+        } catch (e: any) {
+            console.log(e);
+            return e
+        }
+    }
+
     public static async getVideoByVideoID(videoId: string): Promise<string[]> {
         const options: AxiosRequestConfig = {
             url: `${this.youtubeAPIPrefix}/videos`,
