@@ -1,4 +1,4 @@
-import { ApplicationConfig } from './index'
+import { ApplicationConfig } from './index';
 
 export class TemplateConfig implements ApplicationConfig {
     readonly awsProfile = 'xxxxx';

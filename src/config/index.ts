@@ -1,4 +1,4 @@
-import {LocalConfig} from './localConfig'
+import { LocalConfig } from './localConfig';
 
 interface ApplicationConfig {
     readonly awsProfile: string;
