@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
-import { appConfig } from '../config/index';
+import { appConfig } from '../../config/index';
 
 export class YoutubeDataAPI {
     static youtubeAPIPrefix = 'https://www.googleapis.com/youtube/v3';
@@ -25,7 +25,7 @@ export class YoutubeDataAPI {
         }
     }
 
-    public static async getChannelByChannelID(channelId: string): Promise<string[]> {
+    public static async getChannelByChannelID(channelId: string): Promise<any> {
         const options: AxiosRequestConfig = {
             url: `${this.youtubeAPIPrefix}/channels`,
             method: 'GET',

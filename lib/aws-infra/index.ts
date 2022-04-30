@@ -1,7 +1,7 @@
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { Readable } from 'stream';
 import { fromIni } from '@aws-sdk/credential-provider-ini';
-import { appConfig } from '../config/index';
+import { appConfig } from '../../config/index';
 
 export class InfrastructureS3 {
     static s3Client = new S3Client({
