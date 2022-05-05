@@ -3,6 +3,7 @@ import { LocalConfig } from './localConfig';
 interface ApplicationConfig {
     readonly awsProfile: string;
     readonly youtubeAPIKey: string;
+    readonly dataTableName: string;
 }
 
 const appConfig: ApplicationConfig = (() => {
