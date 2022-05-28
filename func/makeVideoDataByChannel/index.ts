@@ -1,24 +1,18 @@
-import { YoutubeDataAPI, FetchedVideoOnlyIDObj, VideoInSummary } from '../../lib/youtube';
+import { VideoWithBatchSummary } from '../../lib/models/videoWithBatchSummary';
+import { YoutubeDataAPI } from '../../lib/youtube';
 import { InfrastructureS3, InfrastructureDynamoDB } from '../../lib/aws-infra';
 import { isRunOnLocal } from '../../lib/util';
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import * as util from 'util'
 
 const lambdaHandler = async (): Promise<undefined> => {
-    type TargetChannel = {
-        id: string;
-        name: string;
-    };
-    const targetChannels: TargetChannel[] = JSON.parse(await InfrastructureS3.getTextFromS3('vget-api-channels', 'channels.json'));
-    const targetChannelIds = targetChannels.map((i: TargetChannel): string => i.id);
-    const promises = targetChannelIds.map((id) => YoutubeDataAPI.getVideosByChannelID(id, true));
-    const fetchedVideosByChannels = await Promise.all(promises);
-    const fetchedVideoObjs = fetchedVideosByChannels.reduce((pre: any[], cur: any) => pre.concat(cur.items), []) as FetchedVideoOnlyIDObj[];
-    const targetVideosInSummary = await Promise.all(fetchedVideoObjs.map((f) => new VideoInSummary(f).checkCreateRequired()));
-    const targetVideosCreateRequired = targetVideosInSummary.filter((v) => v.createRequired);
-
-    const targetVideos = await Promise.all(targetVideosCreateRequired.map((f) => f.makeFullVideoData()));
-
-    await InfrastructureDynamoDB.putVideosToDDB(targetVideos);
+    const targetChannels: {id: string, name: string}[] = JSON.parse(await InfrastructureS3.getTextFromS3('vget-api-channels', 'channels.json'));
+    console.log('targetChannels', targetChannels);
+    const targetChannelIds = targetChannels.map((i): string => i.id);
+    const targetVideoIds = (await Promise.all(targetChannelIds.map((id) => YoutubeDataAPI.getVideoIdsByChannelID(id)))).flat();
+    const targetVideosWithBatchSummary = await Promise.all(targetVideoIds.map((id) => VideoWithBatchSummary.init(id)));
+    const insertRecords = targetVideosWithBatchSummary.map((v) => v.getInsertItems()).flat();
+    console.log('insertRecords', insertRecords);
+    await InfrastructureDynamoDB.batchWriteItems(insertRecords);
     return;
 };
 
