@@ -1,12 +1,10 @@
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
-import { DynamoDBClient, BatchWriteItemCommand, WriteRequest } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, BatchWriteCommand, GetCommand, BatchGetCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBClient, WriteRequest } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient, BatchWriteCommand, GetCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { Readable } from 'stream';
 import { fromIni } from '@aws-sdk/credential-provider-ini';
-import { Video } from '../models/video';
 import { appConfig } from '../../config/index';
 import { isRunOnLocal } from '../util';
-import { DateTime } from 'luxon';
 
 export class InfrastructureS3 {
     static makeS3Client = (): S3Client => {

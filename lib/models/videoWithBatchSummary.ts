@@ -1,7 +1,6 @@
 import { Video, videoId } from "./video";
 import { InfrastructureDynamoDB } from '../../lib/aws-infra';
 import { YoutubeDataAPI } from "../youtube";
-import { isRunOnLocal } from '../util';
 
 interface InsertRequiredByColumn {
     title: boolean
