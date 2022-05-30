@@ -50,10 +50,10 @@ export class VideoWithBatchSummary{
                 title: (existingRecords.find(r=>r.dataType === 'VideoTitle') === undefined),
                 videoType: ( videoType === undefined),
             }
-            if (videoType === undefined || videoType.dataType === 'live') {
+            if (videoType !== undefined && videoType.dataValue === 'live') {
                 insertRequiredByColumn.scheduledStartTime = (existingRecords.find(r=>r.dataType === 'ScheduledStartTime') === undefined)
-                insertRequiredByColumn.actualStartTime = (existingRecords.find(r=>r.dataType === 'ChannelID') === undefined)
-                insertRequiredByColumn.actualEndTime = (existingRecords.find(r=>r.dataType === 'VideoTitle') === undefined)
+                insertRequiredByColumn.actualStartTime = (existingRecords.find(r=>r.dataType === 'ActualStartTime') === undefined)
+                insertRequiredByColumn.actualEndTime = (existingRecords.find(r=>r.dataType === 'ActualEndTime') === undefined)
             }
             if (Object.values(insertRequiredByColumn).some(v=>v)) {
                 const fetchedVideoSnippet = await YoutubeDataAPI.getVideoByVideoID(youTubeVideoId);
