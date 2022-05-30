@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { appConfig } from '../../config/index';
 import { videoId } from '../models/video';
+import Parser from 'rss-parser';
 
 export class YoutubeDataAPI {
     static youtubeAPIPrefix = 'https://www.googleapis.com/youtube/v3';
@@ -79,6 +80,33 @@ export class YoutubeDataAPI {
     }
 }
 
+export class YoutubeRSS {
+    static youtubeRSSPrefix = 'https://www.youtube.com/feeds/videos.xml';
+
+    public static async getVideoIdsByChannelID(channelId: string): Promise<videoId[]> {
+        let options: AxiosRequestConfig = {
+            url: this.youtubeRSSPrefix,
+            method: 'GET',
+            params: {
+                channel_id: channelId
+            }
+        };
+        try {
+            const parser: Parser = new Parser({ //https://www.npmjs.com/package/rss-parser
+                customFields: {
+                    item: [['yt:videoId', 'youtubeVideoId']],
+                }
+            });
+            const rssBody: string = (await axios(options)).data; // GET
+            const feed = await parser.parseString(rssBody);
+            return feed.items.map(item=> item.youtubeVideoId)
+        } catch (e: any) {
+            console.log(e);
+            return e;
+        }
+    }
+}
+
 export type FetchedVideoOnlyIDObj = {
     kind: string;
     etag: string;
@@ -138,6 +166,3 @@ type APIVideoResponse = {
     etag: string;
     items: FetchedVideoObj[];
 };
-
-
-
