@@ -122,7 +122,9 @@ export class InfrastructureDynamoDB {
                         },
                     })
                 );
-                console.log('保存結果: ', result);
+                if (result.$metadata.httpStatusCode === 200) {
+                    console.log('ok');
+                }
             } catch (e: any) {
                 console.log(JSON.stringify(item, null, 2));
                 console.log(e);
