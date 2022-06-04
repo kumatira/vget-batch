@@ -25,15 +25,19 @@ Resources:
           AttributeType: "S"
         - AttributeName: "dataValue"
           AttributeType: "S"
+        - AttributeName: "publishedUnixTime"
+          AttributeType: "N"
       GlobalSecondaryIndexes:
-        - IndexName: "searchAttributeGSI"
+        - IndexName: "DataValueIndex"
           KeySchema:
             - AttributeName: "dataValue"
               KeyType: "HASH"
-            - AttributeName: "id"
+            - AttributeName: "publishedUnixTime"
               KeyType: "RANGE"
           Projection:
-            ProjectionType: "KEYS_ONLY"
+            ProjectionType: "INCLUDE"
+            NonKeyAttributes:
+              - "id"
   MakeVideoDataByChannelFunction:
     Type: AWS::Serverless::Function
     Properties:
