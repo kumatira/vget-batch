@@ -1,0 +1,11 @@
+version = 0.1
+[default.global.parameters]
+profile = "vget-api-deployer"
+region = "ap-northeast-1"
+
+[default.deploy.parameters]
+s3_bucket = "aws-sam-cli-managed-vget-batch"
+s3_prefix = "default"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+stack_name = "vget-batch"
