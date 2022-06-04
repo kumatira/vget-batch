@@ -1,6 +1,7 @@
 import { Video, videoId } from "./video";
 import { InfrastructureDynamoDB } from '../../lib/aws-infra';
 import { YoutubeDataAPI } from "../youtube";
+import { DateTime } from 'luxon'
 
 interface InsertRequiredByColumn {
     title: boolean
@@ -72,13 +73,20 @@ export class VideoWithBatchSummary{
     }
 
     getInsertItems(): {id: string, dataType: string, dataValue: string}[] {
+        if (this.video === undefined) {return []}
         const items = [];
+        const publishedTimeObj = DateTime.fromISO(this.video.publishedAt);
+        const publishedTime = this.video.publishedAt;
+        const publishedUnixTime = publishedTimeObj.toSeconds();
+
         if( this.insertRequiredByColumn.publishedAt && this.video?.publishedAt !== undefined){
             const dataType = Video.tableDataTypeMap['publishedAt']
             items.push({
                 id: this.id,
                 dataType: dataType,
-                dataValue: this.video.publishedAt
+                dataValue: this.video.publishedAt,
+                publishedTime: publishedTime,
+                publishedUnixTime: publishedUnixTime
             })
         }
         if( this.insertRequiredByColumn.channelID && this.video?.channelID !== undefined){
@@ -86,7 +94,9 @@ export class VideoWithBatchSummary{
             items.push({
                 id: this.id,
                 dataType: dataType,
-                dataValue: this.video.channelID
+                dataValue: this.video.channelID,
+                publishedTime: publishedTime,
+                publishedUnixTime: publishedUnixTime
             })
         }
         if( this.insertRequiredByColumn.title && this.video?.title !== undefined){
@@ -94,7 +104,9 @@ export class VideoWithBatchSummary{
             items.push({
                 id: this.id,
                 dataType: dataType,
-                dataValue: this.video.title
+                dataValue: this.video.title,
+                publishedTime: publishedTime,
+                publishedUnixTime: publishedUnixTime
             })
         }
         if( this.insertRequiredByColumn.videoType && this.video?.videoType !== undefined){
@@ -102,7 +114,9 @@ export class VideoWithBatchSummary{
             items.push({
                 id: this.id,
                 dataType: dataType,
-                dataValue: this.video.videoType
+                dataValue: this.video.videoType,
+                publishedTime: publishedTime,
+                publishedUnixTime: publishedUnixTime
             })
         }
         if( this.insertRequiredByColumn.scheduledStartTime && this.video?.scheduledStartTime !== undefined){
@@ -110,7 +124,9 @@ export class VideoWithBatchSummary{
             items.push({
                 id: this.id,
                 dataType: dataType,
-                dataValue: this.video.scheduledStartTime
+                dataValue: this.video.scheduledStartTime,
+                publishedTime: publishedTime,
+                publishedUnixTime: publishedUnixTime
             })
         }
         if( this.insertRequiredByColumn.actualStartTime && this.video?.actualStartTime !== undefined){
@@ -118,7 +134,9 @@ export class VideoWithBatchSummary{
             items.push({
                 id: this.id,
                 dataType: dataType,
-                dataValue: this.video.actualStartTime
+                dataValue: this.video.actualStartTime,
+                publishedTime: publishedTime,
+                publishedUnixTime: publishedUnixTime
             })
         }
         if( this.insertRequiredByColumn.actualEndTime && this.video?.actualEndTime !== undefined){
@@ -126,7 +144,9 @@ export class VideoWithBatchSummary{
             items.push({
                 id: this.id,
                 dataType: dataType,
-                dataValue: this.video.actualEndTime
+                dataValue: this.video.actualEndTime,
+                publishedTime: publishedTime,
+                publishedUnixTime: publishedUnixTime
             })
         }
         return items
